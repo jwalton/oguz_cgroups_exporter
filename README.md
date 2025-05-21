@@ -2,8 +2,6 @@
 
 A unified Prometheus exporter for cgroups and processes, for Linux.
 
-It's capable of collecting metrics from Systemd services and Docker containers.
-
 ## Features
 
 - Collect metrics from Systemd services.
