@@ -1,0 +1,18 @@
+{
+  "cSpell.words": [
+    "blkio",
+    "cmdline",
+    "cpuacct",
+    "cpuset",
+    "envconfig",
+    "Envconfig",
+    "nofail",
+    "procs",
+    "schemars",
+    "serde",
+    "stime",
+    "utime"
+  ],
+  "editor.formatOnSave": true,
+  "rust-analyzer.cargo.features": "all",
+}

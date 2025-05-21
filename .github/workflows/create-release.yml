@@ -1,0 +1,21 @@
+name: Create a GitHub Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.RPTOKEN }}
+      - uses: ncipollo/release-action@v1
+        with:
+          generateReleaseNotes: true
+          token: ${{ secrets.RPTOKEN }}

@@ -1,0 +1,30 @@
+name: Cut a Release
+on:
+  workflow_dispatch:
+    inputs:
+      level:
+        description: "Version bump (patch | minor | major | <x.y.z>)"
+        required: true
+        default: "patch"
+
+permissions: { contents: write }
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+
+      - name: Install cargo-release + git-cliff
+        run: |
+          cargo install cargo-release --locked
+          cargo install git-cliff --locked
+
+      - name: Run cargo-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.RPTOKEN }}
+        run: |
+          cargo release ${{ github.event.inputs.level }} \
+            --no-publish --execute --no-confirm          \
+            --push --sign-tag

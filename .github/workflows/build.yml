@@ -1,0 +1,64 @@
+name: Test
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  # group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.number || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Check
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt,clippy
+      - uses: Swatinem/rust-cache@v2
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: typos-cli,taplo-cli,hawkeye
+      - run: cargo clippy
+
+  test:
+    name: Run tests
+    strategy:
+      matrix:
+        os: [ubuntu-24.04]
+        rust-version: ["stable"]
+    runs-on: ${{ matrix.os }}
+    needs: check
+    steps:
+      - uses: actions/checkout@v4
+      - uses: Swatinem/rust-cache@v2
+      - name: Install toolchain
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ matrix.rust-version }}
+      - name: Run unit tests
+        run: cargo test -- --nocapture
+        shell: bash
+
+  required:
+    name: Required
+    runs-on: ubuntu-24.04
+    if: ${{ always() }}
+    needs:
+      - check
+      - test
+    steps:
+      - name: Guardian
+        run: |
+          if [[ ! ( \
+                 "${{ needs.check.result }}" == "success" \
+              && "${{ needs.test.result }}" == "success" \
+              ) ]]; then
+            echo "Required jobs haven't been completed successfully."
+            exit -1
+          fi

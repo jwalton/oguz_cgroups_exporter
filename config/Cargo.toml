@@ -1,0 +1,28 @@
+[package]
+name = "cgroups_exporter_config"
+version = "1.0.0"
+resolver = "3"
+edition = "2024"
+publish = false
+license = "MIT"
+
+[features]
+default = []
+tokio = ["dep:tokio"]
+
+[dependencies]
+anyhow = { workspace = true }
+serde = { workspace = true }
+serde_yaml = { workspace = true }
+serde_json = { workspace = true }
+schemars = { workspace = true }
+tokio = { workspace = true, features = ["fs"], optional = true }
+
+[dev-dependencies]
+pretty_assertions = "1.4.1"
+
+[package.metadata.release]
+tag-prefix = ""
+publish = false
+release = false
+pre-release-hook = ["git-cliff", "-o", "CHANGELOG.md", "--tag", "{{version}}"]

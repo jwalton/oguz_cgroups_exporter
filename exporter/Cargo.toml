@@ -1,0 +1,77 @@
+[package]
+name = "cgroups_exporter"
+version = "1.0.0"
+edition = "2024"
+publish = false
+description = "A crate to explore cgroups and gather metrics"
+authors = ["Oguz Bilgener <oguz@bilgener.me>"]
+documentation = "http://github.com/oguzbilgener/cgroups_exporter"
+license = "MIT"
+
+[dependencies]
+axum = { version = "0.8" }
+anyhow = "1.0.97"
+arc-swap = "1.7.1"
+bytes = "1.10.1"
+clap = { version = "4.5.32", features = ["derive"] }
+cgroups_exporter_config = { path = "../config", features = ["tokio"] }
+cgroups-explorer = { version = "0.4.1", features = ["regex"] }
+cgroups-rs = { version = "0.3.4", features = ["serde"] }
+envconfig = "0.11.0"
+derive-getters = { version = "0.5", features = ["auto_copy_getters"] }
+derive_more = { version = "2.0.1", features = [
+    "from",
+    "into",
+    "as_ref",
+    "display",
+    "deref",
+] }
+glob = "0.3.2"
+lru = "0.14.0"
+new_string_template = "1.5"
+notify = { version = "8.0.0" }
+notify-debouncer-full = "0.5.0"
+procfs = { version = "0.17.0", features = ["chrono"] }
+regex = "1.11.1"
+saturating_cast = "0.1.0"
+schemars = { workspace = true }
+serde = { workspace = true }
+serde_prom = "0.2.0"
+shell-quote = "0.7.2"
+strum = { version = "0.27.1", features = ["derive"] }
+thiserror = "2.0.12"
+tracing = "0.1.40"
+tracing-subscriber = { version = "0.3.18", features = ["json", "env-filter"] }
+tokio = { version = "1.44.2", features = ["fs", "rt", "macros", "signal"] }
+tokio-stream = { version = "0.1.0", features = ["sync"] }
+tower-http = { version = "0.6.2", features = [
+    "trace",
+    "timeout",
+    "compression-gzip",
+] }
+tokio-util = { version = "0.7" }
+
+[dev-dependencies]
+tracing-test = { version = "0.2", features = ["no-env-filter"] }
+pretty_assertions = "1.4.1"
+mockall = "0.13.1"
+
+[build-dependencies]
+cargo-emit = "0.2"
+cgroups_exporter_config = { path = "../config" }
+schemars = { workspace = true }
+serde_json = { workspace = true }
+
+[lints.rust]
+unsafe_code = "forbid"
+missing_docs = "warn"
+
+[lints.clippy]
+pedantic = "warn"
+cargo = "warn"
+all = "warn"
+
+[package.metadata.release]
+tag-prefix = ""
+publish = false
+pre-release-hook = ["git-cliff", "-o", "CHANGELOG.md", "--tag", "{{version}}"]

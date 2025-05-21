@@ -1,0 +1,35 @@
+# yaml-language-server: $schema=../../target/debug/config_schema.json
+cgroups:
+  - match:
+      path: "services.scope/*"
+      removePrefix: "services.scope/"
+    metrics:
+      labelMap:
+        name: "name"
+      namespace: "my_services"
+  - match:
+      path:
+        regex: "^system.slice/docker-(?<containerId>\\w+)\\.scope$"
+      name:
+        shell: 'docker ps --filter "id={containerId}" --format "{{.Names}}"'
+        output: stdout
+    metrics:
+      namespace: "container"
+  - match:
+      path:
+        regex: "^system.slice/docker-(?<containerId>\\w+)\\.scope$"
+      name: "{containerId}"
+    metrics:
+      labelMap:
+        name: "id"
+      namespace: "container"
+processes:
+  - match:
+      name: "firefox"
+      comm: "firefox"
+    metrics:
+      labelMap:
+        name: "name"
+      namespace: "my_services"
+shell:
+  cacheSize: 1024
