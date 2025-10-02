@@ -1,6 +1,5 @@
 use std::{collections::HashMap, sync::LazyLock};
 
-use const_map::const_map;
 use serde_prom::{MetricDescriptor, MetricType};
 
 pub static METADATA: phf::Map<&'static str, MetricDescriptor<'static>> = phf::phf_map! {
